@@ -77,10 +77,14 @@
 
   environment.systemPackages = with pkgs; [
     cage
+    x32edit
   ];
 
-  services.cage.enable = true;
-
+  services.cage = { 
+    enable = true;
+    user = "kiosk";
+    program = "x32-edit";
+  };
   # TODO: Set your hostname
   networking.hostName = "AVT-PC";
 
@@ -94,10 +98,10 @@
       # TODO: You can set an initial password for your user.
       # If you do, you can skip setting a root password by passing '--no-root-passwd' to nixos-install.
       # Be sure to change it (using passwd) after rebooting!
-      initialPassword = "abelIsGeweldig";
+      initialPassword = "AbelIsGeweldig";
       isNormalUser = true;
       openssh.authorizedKeys.keys = [
-        # TODO: Add your SSH public key(s) here, if you plan on using SSH to connect
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIE6hfV+Wz306ms09Z6jrez7didC5ETSv66FCm5ff/lMb gulp1n"
       ];
       # TODO: Be sure to add any other groups you need (such as networkmanager, audio, docker, etc)
       extraGroups = ["wheel"];
@@ -117,5 +121,5 @@
   };
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
-  system.stateVersion = "23.05";
+  system.stateVersion = "23.11";
 }
