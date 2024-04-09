@@ -83,7 +83,8 @@
   services.cage = { 
     enable = true;
     user = "kiosk";
-    program = "x32-edit";
+    # TODO set boot program here
+    # program = "";
   };
   # TODO: Set your hostname
   networking.hostName = "AVT-PC";
