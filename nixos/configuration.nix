@@ -49,6 +49,13 @@
     };
   };
 
+  console = {
+    earlySetup = true;
+    font = "${pkgs.terminus_font}/share/consolefonts/ter-132n.psf.gz";
+    packages = with pkgs; [ terminus_font ];
+    keyMap = "us";
+  };    
+
   # This will add each flake input as a registry
   # To make nix3 commands consistent with your flake
   nix.registry = (lib.mapAttrs (_: flake: {inherit flake;})) ((lib.filterAttrs (_: lib.isType "flake")) inputs);
@@ -76,15 +83,21 @@
   networking.networkmanager.enable = true;
 
   environment.systemPackages = with pkgs; [
+    kitty
+    vlc
+    foot
     cage
     x32edit
+    git
+    neovim
+    jdk21
+    firefox
   ];
 
   services.cage = { 
     enable = true;
     user = "kiosk";
-    # TODO set boot program here
-    # program = "";
+    program = "${pkgs.foot}/bin/foot";
   };
   # TODO: Set your hostname
   networking.hostName = "AVT-PC";
@@ -102,10 +115,10 @@
       initialPassword = "AbelIsGeweldig";
       isNormalUser = true;
       openssh.authorizedKeys.keys = [
-        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIE6hfV+Wz306ms09Z6jrez7didC5ETSv66FCm5ff/lMb gulp1n"
+	"ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIM8aruqD4MZ8vLkX2RoZjjeXjsiZNm/JXV/x/oyxPDD8 tiebe@pluto"
       ];
       # TODO: Be sure to add any other groups you need (such as networkmanager, audio, docker, etc)
-      extraGroups = ["wheel"];
+      extraGroups = ["wheel" "networkmanager" "docker"];
     };
   };
 
