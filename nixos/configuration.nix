@@ -60,8 +60,6 @@
   # To make nix3 commands consistent with your flake
   nix.registry = (lib.mapAttrs (_: flake: {inherit flake;})) ((lib.filterAttrs (_: lib.isType "flake")) inputs);
 
-  # This will additionally add your inputs to the system's legacy channels
-  # Making legacy nix commands consistent as well, awesome!
   nix.nixPath = ["/etc/nix/path"];
   environment.etc =
     lib.mapAttrs'
@@ -83,32 +81,42 @@
   networking.networkmanager.enable = true;
 
   environment.systemPackages = with pkgs; [
-    kitty
-    vlc
-    foot
-    cage
-    x32edit
     git
     neovim
-    jdk21
-    firefox
+    ffmpeg
   ];
 
-  services.cage = { 
+  services.pipewire = {
     enable = true;
-    user = "kiosk";
-    program = "${pkgs.foot}/bin/foot";
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
   };
+
   # TODO: Set your hostname
   networking.hostName = "AVT-PC";
 
   # TODO: This is just an example, be sure to use whatever bootloader you prefer
   boot.loader.systemd-boot.enable = true;
 
+  systemd.user.services.GoRadio = {
+    name = "GoRadio";
+    enable = true;
+    path = pkgs.buildGo122Module {
+      name = "GoRadio";
+      src = pkgs.fetchgit {
+        url = "https://github.com/AVTOLZ/GoRadio.git";
+        rev = "aed51d62a45a01d47d263c4db8350b4b7b4c5b88";
+        hash = "sha256-UC/F9WbVyYuAhOLxMgnIyzd+1aVBrFLQG8xPm7udL8Q=";
+      };
+      vendorHash = "sha256-LEoWUO/TyLONd8m0D1hki+WvmLO09JyESuH+eHRWoSc=";
+    };
+  };
+
   # TODO: Configure your system-wide user settings (groups, etc), add more users as needed.
   users.users = {
     # FIXME: Replace with your username
-    kiosk = {
+    AVTServer = {
       # TODO: You can set an initial password for your user.
       # If you do, you can skip setting a root password by passing '--no-root-passwd' to nixos-install.
       # Be sure to change it (using passwd) after rebooting!
@@ -118,7 +126,7 @@
 	"ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIM8aruqD4MZ8vLkX2RoZjjeXjsiZNm/JXV/x/oyxPDD8 tiebe@pluto"
       ];
       # TODO: Be sure to add any other groups you need (such as networkmanager, audio, docker, etc)
-      extraGroups = ["wheel" "networkmanager" "docker"];
+      extraGroups = ["wheel" "networkmanager"];
     };
   };
 
@@ -135,5 +143,5 @@
   };
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
-  system.stateVersion = "23.11";
+  system.stateVersion = "24.05";
 }
