@@ -1,6 +1,6 @@
-{ pkgs ? import <nixpkgs> {} }:
+with import <nixpkgs> {};
 
-pkgs.buildGo122Module {
+pkgs.buildGoModule {
   name = "GoRadio";
   src = pkgs.fetchgit {
     url = "https://github.com/AVTOLZ/GoRadio.git";

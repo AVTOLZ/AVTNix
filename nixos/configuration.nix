@@ -102,11 +102,9 @@
 
   systemd.user.services.GoRadio = {
     name = "GoRadio";
-    enable = true;
-    wantedBy = ["multi-user.target"];
-    serviceConfig = {
-      ExecStart = "GoRadio";
-    };
+    #enable = true;
+    #wantedBy = ["multi-user.target"];
+    script = (import ./GoRadio.nix)/bin/GoRadio;
   };
 
   # TODO: Configure your system-wide user settings (groups, etc), add more users as needed.
