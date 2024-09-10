@@ -7,7 +7,11 @@
   config,
   pkgs,
   ...
-}: {
+}: 
+let 
+  radio = (import ./GoRadio.nix);
+in
+{
   # You can import other NixOS modules here
   imports = [
     # If you want to use modules your own flake exports (from modules/nixos):
@@ -84,7 +88,7 @@
     pkgs.git
     pkgs.neovim
     pkgs.ffmpeg
-    (import ./GoRadio.nix)
+    radio
   ];
 
   services.pipewire = {
@@ -100,11 +104,10 @@
   # TODO: This is just an example, be sure to use whatever bootloader you prefer
   boot.loader.systemd-boot.enable = true;
 
-  systemd.user.services.GoRadio = {
-    name = "GoRadio";
-    #enable = true;
-    #wantedBy = ["multi-user.target"];
-    script = (import ./GoRadio.nix)/bin/GoRadio;
+  systemd.services.GoRadio = {
+    enable = true;
+    wantedBy = ["multi-user.target"];
+    script = "${radio}/bin/GoRadio";
   };
 
   # TODO: Configure your system-wide user settings (groups, etc), add more users as needed.
